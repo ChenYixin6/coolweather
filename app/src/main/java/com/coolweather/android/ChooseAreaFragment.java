@@ -83,15 +83,8 @@ public class ChooseAreaFragment extends Fragment {
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        //在onActivityCreated()方法中给ListView和Button设置了点击事件
         super.onActivityCreated(savedInstanceState);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            /**
-             * 当你点击了某个省的时候会进入到ListView的onItemClick()方法中，
-             * 这个时候会根据当前的级别来判断是去调用queryCities()方法还是queryCounties()方法，
-             * queryCities()方法是去查询市级数据，而queryCounties()方法是去查询县级数据，
-             * 这两个方法内部的流程和queryProvinces()方法基本相同
-             */
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 if (currentLevel == LEVEL_PROVINCE) {
@@ -100,9 +93,18 @@ public class ChooseAreaFragment extends Fragment {
                 } else if (currentLevel == LEVEL_CITY) {
                     selectedCity = cityList.get(position);
                     queryCounties();
+                } else if (currentLevel == LEVEL_COUNTY) {
+                    String weatherId = countyList.get(position).getWeatherId();
+                    Intent intent = new Intent(getActivity(), WeatherActivity.class);
+                    intent.putExtra("weather_id",weatherId);
+                    startActivity(intent);
+                    getActivity().finish();
                 }
             }
         });
+
+
+
         /**
          * 在返回按钮的点击事件里，会对当前ListView的列表级别进行判断。
          * 如果当前是县级列表，那么就返回到市级列表，
